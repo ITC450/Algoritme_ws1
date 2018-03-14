@@ -1,67 +1,42 @@
-#include <algorithm>
-#include <fstream>
 #include <iostream>
-#include <iterator>
-#include <sstream>
+#include <fstream>
+#include <chrono>
 #include <string>
-#include <vector>
 
-using namespace std;
+//std::ifstream file("workshop_data_small.csv");
+//std::ifstream file("workshop_data_medium.csv");
+std::ifstream file("workshop_data_large.csv");
 
-bool ReadFromFile(int&val_x, int&val_y, ifstream&file)
-{
-   string line;
-   //int    temp;
-   string item;
-   int    i = 0;
 
-   if (!getline(file, line))
-   {
-      return(0);
-   }
-   istringstream in(line);
-   while (getline(in, item, ';'))
-   {
-      if (i == 1)
-      {
-         val_x = stoi(item.c_str());
-      }
-      else if (i == 2)
-      {
-         val_y = stoi(item.c_str());
-      }
-   }
-   return(1);
-}
+int main() {
+    float coor[2]{};
+    std::string::size_type n1, n2;
+    std::string line, temp_line_x,temp_line_y;
+    std::cout << "Start" << std::endl;
 
-int main()
-{
-   vector <vector <int> > values;
-   //vector <int>           valueline;
-   ifstream fin("test.csv");
-   string   item;
-   string   temp;
-   getline(fin, temp);
-   int step = 0;
-   /*for (string line; getline(fin, line); )
-    * {
-    *  istringstream in(line);
-    *
-    *  while (getline(in, item, ';'))
-    *  {
-    *      valueline.push_back(stoi(item.c_str()));
-    *  }
-    *
-    *  values.push_back(valueline);
-    *  valueline.clear();
-    * }*/
-    while(ReadFromFile(values.at(step).at(1), values.at(step).at(2), fin)) step++;
-   for (const std::vector <int>&v : values)
-   {
-      for (int x : v)
-      {
-         std::cout << x << ' ';
-      }
-      std::cout << std::endl;
-   }
+    //To get rid of first junk line
+    std::getline(file, line,'\n');
+    n1 = line.find(";");
+    n2 = line.find(";",n1+1);
+    temp_line_x=line.substr(n1+1,n2-n1-1);
+    temp_line_y=line.substr(n2+1);
+    std::cout << temp_line_x << " , ";
+    std::cout << temp_line_y << std::endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    while (std::getline(file, line,'\n'))
+    {
+        n1 = line.find(";");
+        n2 = line.find(";",n1+1);
+        temp_line_x=line.substr(n1+1,n2-n1-1);
+        temp_line_y=line.substr(n2+1);
+        coor[0]=std::stof(temp_line_x);
+        coor[1]=std::stof(temp_line_y);
+/*        std::cout << coor[0] << " , ";
+        std::cout << coor[1] << std::endl;*/
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto result = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+    std::cout << "Read time = " << result.count()/1000 << " milliseconds" << std::endl;
+    return 0;
 }
