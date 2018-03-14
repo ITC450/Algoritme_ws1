@@ -3,10 +3,10 @@
 #include <chrono>
 #include <string>
 #define N 10
-//std::ifstream file("workshop_data_small.csv");
+std::ifstream file("workshop_data_small.csv");
 //std::ifstream file("workshop_data_medium.csv");
 //std::ifstream file("workshop_data_large.csv");
-std::ifstream file("test.csv");
+//std::ifstream file("test.csv");
 void SetupTree(float x, float y, int arr[]){
     int index{1};
     //int size=2048;
@@ -101,13 +101,13 @@ int main() {
         y=std::stof(temp_line_y);
         SetupTree(x,y,tree);
     }
-    std::cout << tree[0] << std::endl;
+    std::cout << "Total elements = " << tree[0] << std::endl;
     auto end = std::chrono::high_resolution_clock::now();
     auto result = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
     std::cout << "Import time = " << result.count()/1000 << " milliseconds" << std::endl;
-    std::cout << tree[38228] << '\n';
+
     auto start2 = std::chrono::high_resolution_clock::now();
-    std::cout << "Visits: " << SearchTree(511,511,10,tree) << std::endl;
+    std::cout << "Visits: " << SearchTree(45,45,10,tree) << std::endl;
     auto end2 = std::chrono::high_resolution_clock::now();
     auto result2 = std::chrono::duration_cast<std::chrono::microseconds>(end2-start2);
     std::cout << "Search time = " << result2.count() << " microseconds" << std::endl;
