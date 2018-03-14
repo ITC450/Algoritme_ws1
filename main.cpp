@@ -3,10 +3,10 @@
 #include <chrono>
 #include <string>
 #define N 10
-std::ifstream file("workshop_data_small.csv");
+//std::ifstream file("workshop_data_small.csv");
 //std::ifstream file("workshop_data_medium.csv");
 //std::ifstream file("workshop_data_large.csv");
-
+std::ifstream file("test.csv");
 void SetupTree(float x, float y, int arr[]){
     int index{1};
     //int size=2048;
@@ -25,17 +25,17 @@ void SetupTree(float x, float y, int arr[]){
             index=index*4+1;
             arr[index-1]++;
         }
-        if(x > resForsX && y < resForsY){
+        if(x >= resForsX && y < resForsY){
             index=index*4;
             arr[index-1]++;
             x_fors+=size/2;
         }
-        if(x < resForsX && y > resForsY){
+        if(x < resForsX && y >= resForsY){
             index=index*4-1;
             arr[index-1]++;
             y_fors+=size/2;
         }
-        if(x > resForsX && y > resForsY){
+        if(x >= resForsX && y >= resForsY){
             index=index*4-2;
             arr[index-1]++;
             x_fors+=size/2;
@@ -61,22 +61,22 @@ int SearchTree(int x, int y, int level, int arr[]){
         if(x < resForsX && y < resForsY){
             index=index*4+1;
         }
-        if(x > resForsX && y < resForsY){
+        if(x >= resForsX && y < resForsY){
             index=index*4;
             x_fors+=size/2;
         }
-        if(x < resForsX && y > resForsY){
+        if(x < resForsX && y >= resForsY){
             index=index*4-1;
             y_fors+=size/2;
         }
-        if(x > resForsX && y > resForsY){
+        if(x >= resForsX && y >= resForsY){
             index=index*4-2;
             x_fors+=size/2;
             y_fors+=size/2;
         }
         size/=2;
     }
-    return arr[index];
+    return arr[index-1];
 }
 
 int main() {
@@ -105,9 +105,9 @@ int main() {
     auto end = std::chrono::high_resolution_clock::now();
     auto result = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
     std::cout << "Import time = " << result.count()/1000 << " milliseconds" << std::endl;
-
+    std::cout << tree[38228] << '\n';
     auto start2 = std::chrono::high_resolution_clock::now();
-    std::cout << "Visits: " << SearchTree(-200,300,10,tree) << std::endl;
+    std::cout << "Visits: " << SearchTree(511,511,10,tree) << std::endl;
     auto end2 = std::chrono::high_resolution_clock::now();
     auto result2 = std::chrono::duration_cast<std::chrono::microseconds>(end2-start2);
     std::cout << "Search time = " << result2.count() << " microseconds" << std::endl;
