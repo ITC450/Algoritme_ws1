@@ -27,9 +27,6 @@ void insertionSort(std::vector<punkt> &arr, int n)
        key = arr[i].Visits;
        j = i-1;
 
-       /* Move elements of arr[0..i-1], that are
-          greater than key, to one position ahead
-          of their current position */
        while (j >= 0 && arr[j].Visits > key)
        {
            arr[j+1] = arr[j];
@@ -42,24 +39,19 @@ void insertionSort(std::vector<punkt> &arr, int n)
 
 void heapify(std::vector<punkt> &arr, int n, int i)
 {
-    int largest = i;  // Initialize largest as root
-    int l = 2*i + 1;  // left = 2*i + 1
-    int r = 2*i + 2;  // right = 2*i + 2
+    int largest = i;
+    int l = 2*i + 1;
+    int r = 2*i + 2;
 
-    // If left child is larger than root
     if (l < n && arr[l].Visits > arr[largest].Visits)
         largest = l;
 
-    // If right child is larger than largest so far
     if (r < n && arr[r].Visits > arr[largest].Visits)
         largest = r;
 
-    // If largest is not root
     if (largest != i)
     {
         std::swap(arr[i], arr[largest]);
-
-        // Recursively heapify the affected sub-tree
         heapify(arr, n, largest);
     }
 }
@@ -67,21 +59,35 @@ void heapify(std::vector<punkt> &arr, int n, int i)
 // main function to do heap sort
 void heapSort(std::vector<punkt> &arr, int n)
 {
-    // Build heap (rearrange array)
-    for (int i = n / 2 - 1; i >= 0; i--)
-        heapify(arr, n, i);
+    for (int i = n / 2 - 1; i >= 0; i--)heapify(arr, n, i);
 
-    // One by one extract an element from heap
     for (int i=n-1; i>=0; i--)
     {
-        // Move current root to end
         std::swap(arr[0], arr[i]);
-
-        // call max heapify on the reduced heap
         heapify(arr, i, 0);
     }
 }
 
+//count sort
+void countingSort(std::vector<punkt> &arr,int n,int RANGE){
+    int count[RANGE]={0};
+    int i;
+    std::vector<punkt> out(n);
+
+    for(i=0;i<n;i++)
+        ++count[arr[i].Visits];
+
+    for(i=1;i<RANGE;i++)
+        count[i]+=count[i-1];
+
+    for(i=n-1;i>=0;i--){
+        out[count[arr[i].Visits]-1]=arr[i];
+        --count[arr[i].Visits];
+    }
+
+    for(i=0;i<n;i++)
+        arr[i]=out[i];
+}
 // Driver program
 
 
@@ -97,7 +103,7 @@ void SetupTree(float x, float y, std::vector<punkt> &arr)
     int size=2048;
     int full_size=2048;
     //int size = 1024;
-
+    //int full_size = 1024;
     arr[0].Visits++;
     x += (size / 2);
     y += (size / 2);
@@ -184,13 +190,65 @@ int SearchTree(int x, int y, int level, std::vector<punkt> &arr)
     return(res);
 }
 
+void SearchGivenPoint(int visits, std::vector<punkt> &arr, bool dir){
+  int index = 0;
+    std::string moreless = "less ";
+    if(dir){
+        moreless = "equal and more ";
+    }
+    /*int index = arr.size()/2;
+  int oldindex = 0;
+  while(arr[index].Visits != visits){
+    if(arr[index].Visits > visits){
+      index = ((index - oldindex)/2)+oldindex;
+
+    } else if(arr[index].Visits < visits){
+      int nyindex = index + (index/2);
+      oldindex = index;
+      index = nyindex;
+        if(index > arr.size())index = arr.size();
+    }
+    if(index == oldindex && arr[index].Visits != visits){
+      std::cout << "Area does not exist!" << '\n';
+      return;
+    }
+  }
+  while(arr[index].Visits == visits){
+    index--;
+  }
+  index++;*/
+    while(arr[index].Visits < visits){
+     index++;
+    }
+    index--;
+    /*if(arr[index+1].Visits == visits){
+        index;
+    }else{
+        std::cout << "Area does not exit!" << "\n";
+        return;
+    }*/
+
+  std::cout << "Areas with " << moreless << "than " <<  arr[index+1].Visits << " visits:" << '\n';
+  if(dir == 1){
+    while(arr.size() != ++index){
+      std::cout << arr[index].Visits << " Visits" <<  " in area: (" << arr[index].X_coor <<";" << arr[index].Y_coor << ")" << '\n';
+    }
+  }else if(dir == 0){
+    while(--index > 0){
+      if(arr[index].Visits == 0)return;
+      std::cout << arr[index].Visits << " Visits" <<  " in area: (" << arr[index].X_coor <<";" << arr[index].Y_coor << ")" << '\n';
+
+    }
+  }
+}
+
 int main()
 {
     float x, y;
     std::vector<punkt> tree(4194304+1398101);
     std::vector<punkt> sortarr(4194304);
-    //std::vector<int> tree(1398101,0);
-    //std::vector<int>  sortarr[1048576];
+    //std::vector<punkt> tree(1398101);
+    //std::vector<punkt>  sortarr(1048576);
     std::string::size_type n1, n2;
     std::string line, temp_line_x, temp_line_y;
 
@@ -227,13 +285,15 @@ int main()
 
     auto start3 = std::chrono::high_resolution_clock::now();
     sortarr.assign(tree.begin()+1398101,tree.end());
+    //sortarr.assign(tree.begin()+349525,tree.end());
     //for (int i = 0; i < 1048576; i++)
     //{
     //  sortarr[i] = tree[i + 262144];
     //}
-    heapSort(sortarr, sortarr.size());
+    //heapSort(sortarr, sortarr.size());
     //insertionSort(sortarr, sortarr.size());
     //std::sort(sortarr.begin(), sortarr.end(),sortFunc);
+    countingSort(sortarr,4194304,50);
 
     auto end3    = std::chrono::high_resolution_clock::now();
     auto result3 = std::chrono::duration_cast <std::chrono::microseconds>(end3 - start3);
@@ -241,7 +301,5 @@ int main()
     std::cout << "Max: " << sortarr[4194303].Visits << " i (" << sortarr[4194303].X_coor <<";" << sortarr[4194303].Y_coor << ")" << '\n';
     std::cout << "Min: " << sortarr[0].Visits << " i (" << sortarr[0].X_coor <<";" << sortarr[0].Y_coor << ")" << '\n';
 
-    std::cout << "Tjek af første sæt(næste to linjer skal være ens): " << '\n';
-    std::cout << "28 i (-48;104)" << '\n';
-    std::cout << tree[3136465].Visits << " i (" << tree[3136465].X_coor <<";" << tree[3136465].Y_coor << ")" << '\n';
+    SearchGivenPoint(44,sortarr,1);
 }
