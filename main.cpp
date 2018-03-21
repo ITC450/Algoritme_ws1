@@ -19,6 +19,27 @@ struct punkt {
     int Y_coor;
 };
 
+void insertionSort(std::vector<punkt> &arr, int n)
+{
+   int i, key, j;
+   for (i = 1; i < n; i++)
+   {
+       key = arr[i].Visits;
+       j = i-1;
+
+       /* Move elements of arr[0..i-1], that are
+          greater than key, to one position ahead
+          of their current position */
+       while (j >= 0 && arr[j].Visits > key)
+       {
+           arr[j+1] = arr[j];
+           j = j-1;
+       }
+       arr[j+1].Visits = key;
+   }
+}
+
+
 void heapify(std::vector<punkt> &arr, int n, int i)
 {
     int largest = i;  // Initialize largest as root
@@ -211,6 +232,7 @@ int main()
     //  sortarr[i] = tree[i + 262144];
     //}
     heapSort(sortarr, sortarr.size());
+    //insertionSort(sortarr, sortarr.size());
     //std::sort(sortarr.begin(), sortarr.end(),sortFunc);
 
     auto end3    = std::chrono::high_resolution_clock::now();
